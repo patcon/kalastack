@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   # Use multi VM syntax
   config.vm.define :kalabox do |kalabox|
     kalabox.vm.box = "kalabox"
-    kalabox.vm.hostname = "kala" 
+    kalabox.vm.hostname = "kala.box"
 
     # The url from where the 'config.vm.box' box will be fetched if it
     # doesn't already exist on the user's system.
