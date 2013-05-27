@@ -80,30 +80,33 @@ Vagrant.configure("2") do |config|
     # # }
     #
 
-    kalabox.vm.provision :shell do |shell|
-      shell.path = "scripts/puppet-setup.sh"
-    end
+    unless ENV['KALABOX_SOLO'].nil?
+      # should not ever run this provisioner except for development
+      kalabox.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "manifests"
+        puppet.manifest_file  = "site.pp"
+        puppet.module_path = "modules"
+        #puppet.options = "--verbose --debug"
+        puppet.facter = {
+          "vagrant" => "1",
+          "kalauser" => "vagrant",
+          "kalahost" => "192.168.42.1",
+        }
+      end
+    else
+      kalabox.vm.provision :shell do |shell|
+        shell.path = "scripts/puppet-setup.sh"
+      end
 
-    kalabox.vm.provision :puppet_server do |puppet|
-      puppet.puppet_server = "kalabox.kalamuna.com"
-      puppet.options = "--verbose --debug --test"
-      puppet.facter = {
-        "vagrant" => "1",
-        "kalauser" => "vagrant",
-        "kalahost" => "192.168.42.1",
-      }
-    end
-    # should not ever run this provisioner except for development
-    kalabox.vm.provision :puppet do |puppet|
-       puppet.manifests_path = "manifests"
-       puppet.manifest_file  = "site.pp"
-       puppet.module_path = "modules"
-       puppet.options = "--verbose --debug"
-       puppet.facter = {
-        "vagrant" => "1",
-        "kalauser" => "vagrant",
-        "kalahost" => "192.168.42.1",
-      }
+      kalabox.vm.provision :puppet_server do |puppet|
+        puppet.puppet_server = "kalabox.kalamuna.com"
+        puppet.options = "--verbose --debug --test"
+        puppet.facter = {
+          "vagrant" => "1",
+          "kalauser" => "vagrant",
+          "kalahost" => "192.168.42.1",
+        }
+      end
     end
 
 
