@@ -18,6 +18,7 @@ $ mkdir ~/kalastack
 $ cd ~/kalastack
 $ git clone git://github.com/kalamuna/kalastack.git ./
 $ vagrant plugin install vagrant-hostsupdater
+$ vagrant plugin install vagrant-vbguest
 $ vagrant up kalabox --provision-with=shell,puppet_server
 ```
 
