@@ -80,6 +80,13 @@ Vagrant.configure("2") do |config|
     # # }
     #
 
+    # Common data for any provisioner.
+    @facter_hash = {
+      "vagrant" => "1",
+      "kalauser" => "vagrant",
+      "kalahost" => "192.168.42.1",
+    }
+
     unless ENV['KALABOX_SOLO'].nil?
       # should not ever run this provisioner except for development
       kalabox.vm.provision :puppet do |puppet|
@@ -87,11 +94,7 @@ Vagrant.configure("2") do |config|
         puppet.manifest_file  = "site.pp"
         puppet.module_path = "modules"
         #puppet.options = "--verbose --debug"
-        puppet.facter = {
-          "vagrant" => "1",
-          "kalauser" => "vagrant",
-          "kalahost" => "192.168.42.1",
-        }
+        puppet.facter = @facter_hash
       end
     else
       kalabox.vm.provision :shell do |shell|
@@ -101,11 +104,7 @@ Vagrant.configure("2") do |config|
       kalabox.vm.provision :puppet_server do |puppet|
         puppet.puppet_server = "kalabox.kalamuna.com"
         puppet.options = "--verbose --debug --test"
-        puppet.facter = {
-          "vagrant" => "1",
-          "kalauser" => "vagrant",
-          "kalahost" => "192.168.42.1",
-        }
+        puppet.facter = @facter_hash
       end
     end
 
