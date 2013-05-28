@@ -101,10 +101,12 @@ Vagrant.configure("2") do |config|
 
       kalabox.vm.provision :puppet do |puppet|
         puppet.manifest_file  = "site.pp"
-        #puppet.options = "--verbose --debug"
         puppet.module_path    = "puppet/modules"
         puppet.manifests_path = "puppet/manifests"
         puppet.facter = @facter_hash
+
+        # Debug mode if env var set.
+        puppet.options = "--verbose --debug" unless ENV['KALA_DEBUG'].nil?
       end
     else
       kalabox.vm.provision :shell do |shell|
@@ -113,8 +115,10 @@ Vagrant.configure("2") do |config|
 
       kalabox.vm.provision :puppet_server do |puppet|
         puppet.puppet_server = "kalabox.kalamuna.com"
-        puppet.options = "--verbose --debug --test"
         puppet.facter = @facter_hash
+
+        # Debug mode if env var set.
+        puppet.options = "--verbose --debug --test" unless ENV['KALA_DEBUG'].nil?
       end
     end
 
