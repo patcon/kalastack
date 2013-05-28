@@ -87,18 +87,28 @@ Vagrant.configure("2") do |config|
       "kalahost" => "192.168.42.1",
     }
 
-    unless ENV['KALABOX_SOLO'].nil?
-      # should not ever run this provisioner except for development
+    # General kalabox setup.
+    kalabox.vm.provision :shell do |shell|
+      shell.path = "scripts/kalabox-setup.sh"
+    end
+
+    # Use `puppet apply` via :puppet provisioner when solo-mode flag set.
+    # (Double-bang converts `nil` to false.)
+    if !!ENV['KALA_SOLO']
+      kalabox.vm.provision :shell do |shell|
+        shell.path = "scripts/puppet-solo-setup.sh"
+      end
+
       kalabox.vm.provision :puppet do |puppet|
-        puppet.manifests_path = "manifests"
         puppet.manifest_file  = "site.pp"
-        puppet.module_path = "modules"
         #puppet.options = "--verbose --debug"
+        puppet.module_path    = "puppet/modules"
+        puppet.manifests_path = "puppet/manifests"
         puppet.facter = @facter_hash
       end
     else
       kalabox.vm.provision :shell do |shell|
-        shell.path = "scripts/puppet-setup.sh"
+        shell.path = "scripts/puppet-server-setup.sh"
       end
 
       kalabox.vm.provision :puppet_server do |puppet|
